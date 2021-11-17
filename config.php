@@ -1,7 +1,7 @@
 <?php
-	define('DB_SERVER', 'localhost:3306');
-	define('DB_USERNAME', 'root');
-	define('DB_PASSWORD', 'Configure32');
+	define('DB_SERVER', 'af-db.cgdl9talsrzb.us-east-2.rds.amazonaws.com:3306');
+	define('DB_USERNAME', 'af_writer');
+	define('DB_PASSWORD', 'QM43+TEc@->CK6Z*WHS2');
 	define('DB_DATABASE', 'af_db');
 	$db = mysqli_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE);
 	

@@ -53,17 +53,19 @@ session_start();?>
 				<th>Product Line</th>
 				<th>Series</th>
 				<th>UPC</th>
-				<th>DPCI</th>				
+				<th>DPCI</th>
+				<th>Release Date</th>
             </tr>
             <?php while ($r = $sql->fetch()): ?>
                 <tr>
-                    <td><?php echo $r['toy_id'] ?></td>
+                    <td style="text-align:center"><?php echo $r['toy_id'] ?></td>
 					<td><?php echo $r['character_name'] ?></td>
 					<td><?php echo $r['company_name'] ?></td>
 					<td><?php echo $r['line_name'] ?></td>
 					<td><?php echo $r['series_name'] ?></td>
 					<td><?php echo $r['upc'] ?></td>
 					<td><?php echo $r['dpci'] ?></td>
+					<td><?php echo $r['release_date'] ?></td>
                 </tr>
             <?php endwhile; ?>
         </table>
