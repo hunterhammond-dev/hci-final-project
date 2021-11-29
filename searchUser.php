@@ -57,7 +57,12 @@ session_start();?>
             </tr>
             <?php while ($r = $sql->fetch()): ?>
                 <tr>
-                    <?php echo '<td><center><img src="'.$r['file_path'].'" height="80" alt="Profile Picture"></center></td>';?>
+                    <?php 
+					if($r['file_path'] == '') {
+						echo '<td><center><img src="img/profile/batmanProfile.jpg" height="80" alt="Profile Picture"></center></td>';
+					} else {
+						echo '<td><center><img src="'.$r['file_path'].'" height="80" alt="Profile Picture"></center></td>';
+					} ?>
 					<td style="text-align:center"><?php echo $r['collector_id'] ?></td>
 					<td><?php echo $r['username'] ?></td>
 					<td><?php echo $r['firstName'] ?></td>
