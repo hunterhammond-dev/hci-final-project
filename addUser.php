@@ -7,33 +7,8 @@ session_start();?>
 <title>Add New User</title>
 <link rel = "stylesheet" type = "text/css" href = "/layouts/style.css">
 </head>
-<body>
-    	
-	<div class="main">
-		<h2>Enter Information to Create a New Account:</h2>
-    
-	
-        <form action="addUser.php" method="POST">
-			<div style="float:left; position:relative; margin-right:40px">	
-				<label for="username"><b>Username:</b></label><br><br>
-				<label for="password"><b>Password:</b></label><br><br><br>
-				<label for="fname"><b>First Name:</b></label><br><br>
-				<label for="lname"><b>Last Name:</b></label><br><br>
-				<label for="email"><b>E-mail:</b></label><br><br>				
-			</div>
-            
-            <div style="float:center; margin-left:40px"> 
-           		<input type="text" id="username" name="username" value="" required><a> <i>*required</i></a> <br><br>
-				<input type="password" id="password" name="password" required><a> <i>*required</i></a><br><br><br>
-               	<input type="text" id="fname" name="fname" required><a> <i>*required</i></a><br><br>
-               	<input type="text" id="lname" name="lname" required><a> <i>*required</i></a><br><br>
-               	<input type="text" id="email" name="email" required><a> <i>*required</i></a><br><br>
-               	<input type="submit" value="Create Account">
-			</div>
-		</form>
-	</div>
-	
-		
+
+	<div class="SQL">
 		<?php
 		if(isset($_POST['fname'])) {
 			$fname = $_POST['fname'];
@@ -60,18 +35,62 @@ session_start();?>
 		} else {
 			$password = '';
 		}
-		if($fname != '' AND $lname != '' AND $email != '' AND $username != '' AND $password != '') {
+		if(isset($_POST['password2'])) {
+			$password2 = $_POST['password2'];
+		} else {
+			$password2 = '';
+		}
+		if(isset($_FILES['image'])){
+			$errors= array();
+			$file_name = $_FILES['image']['name'];
+			$file_size =$_FILES['image']['size'];
+			$file_tmp =$_FILES['image']['tmp_name'];
+			$file_type=$_FILES['image']['type'];
+		  
+			$tmp = explode('.',$_FILES['image']['name']);
+			$file_ext=strtolower(end($tmp));
+			$sqlFile = 'img/profile/'.$username .'.' .$file_ext;		  
+
+		  
+		  $extensions= array("jpeg","jpg","png");
+		  
+		  if(in_array($file_ext,$extensions)=== false){
+			 $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+		  }
+		  
+		  if($file_size > 2097152){
+			 $errors[]='File size must be excately 2 MB';
+		  }
+		  
+		  if(empty($errors)==true){
+			 move_uploaded_file($file_tmp, $sqlFile);
+			 
+			 #echo "Success";
+		  }else{
+			 print_r($errors);
+		  }
+		} else {
+			$sqlFile = '';
+		}
+		
+		#echo 'File variable is: ' ;
+		#echo $sqlFile;
+			 
+		
+		if($fname != '' AND $lname != '' AND $email != '' AND $username != '' AND $password != '' AND $password2 != '') {
+			if($password == $password2) {
         try {
 
 			
             // execute the stored procedure
-            $sql = $pdo->prepare('CALL af_db.proc_new_user(?,?,?,?,?)');
+            $sql = $pdo->prepare('CALL af_db.proc_new_user(?,?,?,?,?,?)');
             // call the stored procedure
             $sql->bindParam(1, $fname, PDO::PARAM_STR, 100);
 			$sql->bindParam(2, $lname, PDO::PARAM_STR, 100);
 			$sql->bindParam(3, $email, PDO::PARAM_STR, 120);
 			$sql->bindParam(4, $username, PDO::PARAM_STR, 50);
 			$sql->bindParam(5, $password, PDO::PARAM_STR, 30);
+			$sql->bindParam(6, $sqlFile, PDO::PARAM_STR, 200);
 
 			// call the stored procedure
 			$sql->execute();
@@ -100,14 +119,45 @@ session_start();?>
 		} catch (PDOException $e) {
             die("Error occurred:" . $e->getMessage());
         }
+			}else {
+				echo 'PASSWORDS DO NOT MATCH';
+			}
 
 		} else {
 			#DO NOTHING UNTIL FIELDS ARE COMPLETED
 		}
 		?>
-		</div>
+
+	</div>
+
+
+<body>
+    	
+	<div class="main">
+		<h2>Enter Information to Create a New Account:</h2>
+    
 	
-	
-	</div>        
+        <form action="addUser.php" method="POST" enctype="multipart/form-data">
+			<div style="float:left; position:relative; margin-right:40px">	
+				<label for="username"><b>Username:</b></label><br><br>
+				<label for="password"><b>Password:</b></label><br><br><br><br><br><br><br>
+				<label for="fname"><b>First Name:</b></label><br><br>
+				<label for="lname"><b>Last Name:</b></label><br><br>
+				<label for="email"><b>E-mail:</b></label><br><br>
+				<label for="image"><b>Upload Profile Picture:</b></label><br><br>
+			</div>
+            
+            <div style="float:center; margin-left:40px"> 
+           		<input type="text" id="username" name="username" value="" required><a> <i>*required</i></a> <br><br>
+				<input type="password" id="password" name="password" required placeholder="Enter Password"><a> <i>*required</i></a><br><br>
+				<input type="password" id="password2" name="password2" required placeholder="passwords must match"><a> <i>*required</i></a><br><br><br><br>
+               	<input type="text" id="fname" name="fname" required><a> <i>*required</i></a><br><br>
+               	<input type="text" id="lname" name="lname" required><a> <i>*required</i></a><br><br>
+               	<input type="text" id="email" name="email" required><a> <i>*required</i></a><br><br>
+				<input type="file" name="image" />
+               	<input type="submit" value="Create Account">
+			</div>
+		</form>
+	</div>
 </body>
 </html>
