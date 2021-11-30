@@ -57,8 +57,8 @@ session_start();?>
 				<label for="release_date"><b>Release Date:</b></label><br><br>
 			</div>
             
-            <div style="float:center; margin-left:40px"> 
-           		<input type="text" id="name" name="name"><br><br>
+            <div> 
+           		<input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none" type="text" id="name" name="name"><br><br>
 				<select name="manufacturer" id="manufacturer">
 					<?php while($sql_companies->fetch()) {?>
 						<option><?php echo $company_name ?></option>
@@ -79,10 +79,10 @@ session_start();?>
 						<option><?php echo '1:'.$scale ?></option>
 					<?php } ?>
 				</select><br><br>
-               	<input type="text" id="retail_price" name="retail_price"><br><br>
-               	<input type="text" id="upc" name="upc"><br><br>
-               	<input type="text" id="release_date" name="release_date"><br><br>
-               	<input type="submit" value="Add to System">
+               	<input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none" type="text" id="retail_price" name="retail_price"><br><br>
+               	<input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none" type="text" id="upc" name="upc"><br><br>
+               	<input class="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none" type="text" id="release_date" name="release_date"><br><br>
+               	<input class="bg-gray-100 cursor-pointer text-center text-sm text-gray-800 border-2 border-orange-600 hover:border-green-600 rounded py-2 px-6 appearance-none leading-normal" type="submit" value="Add to System">
 			</div>
 		</form>
 	</div>

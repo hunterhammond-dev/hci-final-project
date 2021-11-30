@@ -73,7 +73,7 @@
                 id="nav-content">
                 <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
                     <li class="mr-6 my-2 md:my-0">
-                        <a href="index.html"
+                        <a href="index.php"
                             class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-green-500">
                             <i class="fa fa-envelope fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Browse</span>
                         </a>
@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li class="mr-6 my-2 md:my-0">
-                        <a href="#"
+                        <a href="figureRequest.php"
                             class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-green-500">
                             <i class="fas fa-chart-area fa-fw mr-3"></i><span
                                 class="pb-1 md:pb-0 text-sm">Figure Request</span>
@@ -110,14 +110,47 @@
             <div class="flex">
                 <div class="w-full mx-4 bg-white rounded shadow mt-4">
                     <div class="relative py-2 px-4 ">
-                        <input type="search" placeholder="Search"
-                            class="w-1/2 bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-gray-700 rounded py-1 px-2 pl-10 appearance-none leading-normal">
+						<form action="search.php" method="GET">
+							<input type="text" placeholder="Search.."id="search" name="search"
+								class="w-1/2 bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-gray-700 rounded py-1 px-2 pl-10 appearance-none leading-normal">
+								<input type="submit" value="SEARCH">
+						</form>
                     </div>
                 </div>
             </div>
             <!--Divider-->
             <hr class="border-b-2 border-gray-400 my-8 mx-4">
-            <div class="flex">
+            <div class="result flex">
+			
+					<?php
+				try {
+					if(isset($_GET['search'])) {
+						$query = $_GET['search'];
+					} else {
+						$query = '';
+					}
+					
+					#DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE
+					// execute the stored procedure
+					$sql = $pdo->prepare('CALL af_db.proc_find_figure(?)');
+					// call the stored procedure
+					$sql->bindParam(1, $query, PDO::PARAM_STR, 150);
+					#$sql->bindParam(2, $upc, PDO::PARAM_INT);
+					#$sql->bindParam(3, $dcpi, PDO::PARAM_INT);
+
+					// call the stored procedure
+					$sql->execute();
+					
+					
+				} catch (PDOException $e) {
+					die("Error occurred:" . $e->getMessage());
+				}
+				?>
+				
+				<?php
+				if($query != '') {
+				if($sql->rowCount() > 0) { ?>
+			
                 <div class="w-full mx-4 flex">
                     <div class="w-full mr-2 bg-white text-center text-2xl rounded shadow">
                         <div class="flex flex-col text-left">
@@ -146,7 +179,7 @@
                                             tracking-wider
                                           "
                                         >
-                                          Name
+                                          Toy ID
                                         </th>
                                         <th
                                           scope="col"
@@ -160,7 +193,7 @@
                                             tracking-wider
                                           "
                                         >
-                                          Title
+                                          Character Name
                                         </th>
                                         <th
                                           scope="col"
@@ -174,7 +207,7 @@
                                             tracking-wider
                                           "
                                         >
-                                          Status
+                                          Manufacturer
                                         </th>
                                         <th
                                           scope="col"
@@ -188,7 +221,77 @@
                                             tracking-wider
                                           "
                                         >
-                                          Role
+                                          Product Line
+                                        </th>
+										<th
+                                          scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          "
+                                        >
+                                          Product Line
+                                        </th>
+										<th
+                                          scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          "
+                                        >
+                                          Series
+                                        </th>
+										<th
+                                          scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          "
+                                        >
+                                          UPC
+                                        </th>
+										<th
+                                          scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          "
+                                        >
+                                          DPCI
+                                        </th>
+										<th
+                                          scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          "
+                                        >
+                                          Release Date
                                         </th>
                                         <th scope="col" class="relative px-6 py-3">
                                           <span class="sr-only">Edit</span>
@@ -196,181 +299,45 @@
                                       </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
+									<?php while ($r = $sql->fetch()): ?>
                                       <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                              <img
-                                                class="h-10 w-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1619914775389-748e5e136c26?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjIwMTk4MjAw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=100"
-                                                alt=""
-                                              />
-                                            </div>
-                                            <div class="ml-4">
-                                              <div class="text-sm font-medium text-gray-900">
-                                                Flora Wu
-                                              </div>
-                                              <div class="text-sm text-gray-500">
-                                                flora.wu@example.com
-                                              </div>
-                                            </div>
-                                          </div>
+                                          <?php echo $r['toy_id'] ?>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="text-sm text-gray-900">Software engineer</div>
-                                          <div class="text-sm text-gray-500">IT</div>
+                                          <?php echo $r['character_name'] ?>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                          <span
-                                            class="
-                                              px-2
-                                              inline-flex
-                                              text-xs
-                                              leading-5
-                                              font-semibold
-                                              rounded-full
-                                              bg-green-100
-                                              text-green-800
-                                            "
-                                          >
-                                            Active
-                                          </span>
+                                          <?php echo $r['company_name'] ?>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          Admin
+										<td class="px-6 py-4 whitespace-nowrap">
+                                          <?php echo $r['line_name'] ?>
                                         </td>
-                                        <td
-                                          class="
-                                            px-6
-                                            py-4
-                                            whitespace-nowrap
-                                            text-right text-sm
-                                            font-medium
-                                          "
-                                        >
-                                          <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                            >Edit</a
-                                          >
+										<td class="px-6 py-4 whitespace-nowrap">
+                                          <?php echo $r['series_name'] ?>
+                                        </td>
+										<td class="px-6 py-4 whitespace-nowrap">
+                                          <?php echo $r['upc'] ?>
+                                        </td>
+										<td class="px-6 py-4 whitespace-nowrap">
+                                          <?php echo $r['dpci'] ?>
+                                        </td>
+										<td class="px-6 py-4 whitespace-nowrap">
+                                          <?php echo $r['release_date'] ?>
                                         </td>
                                       </tr>
-                                      <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                              <img
-                                                class="h-10 w-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1620037624682-f9c156d0286f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjIwMTk4Mzc2&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=100"
-                                                alt=""
-                                              />
-                                            </div>
-                                            <div class="ml-4">
-                                              <div class="text-sm font-medium text-gray-900">
-                                                Nida Povey
-                                              </div>
-                                              <div class="text-sm text-gray-500">
-                                                nida.povey@example.com
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="text-sm text-gray-900">CMO</div>
-                                          <div class="text-sm text-gray-500">Marketing</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <span
-                                            class="
-                                              px-2
-                                              inline-flex
-                                              text-xs
-                                              leading-5
-                                              font-semibold
-                                              rounded-full
-                                              bg-green-100
-                                              text-green-800
-                                            "
-                                          >
-                                            Active
-                                          </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          Member
-                                        </td>
-                                        <td
-                                          class="
-                                            px-6
-                                            py-4
-                                            whitespace-nowrap
-                                            text-right text-sm
-                                            font-medium
-                                          "
-                                        >
-                                          <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                            >Edit</a
-                                          >
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                              <img
-                                                class="h-10 w-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1619961602105-16fa2a5465c2?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=100&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjIwMTk4NDAw&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=100"
-                                                alt=""
-                                              />
-                                            </div>
-                                            <div class="ml-4">
-                                              <div class="text-sm font-medium text-gray-900">
-                                                Warren Nixon
-                                              </div>
-                                              <div class="text-sm text-gray-500">
-                                                warren.nixon@example.com
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <div class="text-sm text-gray-900">Designer</div>
-                                          <div class="text-sm text-gray-500">UI/UX</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                          <span
-                                            class="
-                                              px-2
-                                              inline-flex
-                                              text-xs
-                                              leading-5
-                                              font-semibold
-                                              rounded-full
-                                              bg-green-100
-                                              text-green-800
-                                            "
-                                          >
-                                            Active
-                                          </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                          Owner
-                                        </td>
-                                        <td
-                                          class="
-                                            px-6
-                                            py-4
-                                            whitespace-nowrap
-                                            text-right text-sm
-                                            font-medium
-                                          "
-                                        >
-                                          <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                            >Edit</a
-                                          >
-                                        </td>
-                                      </tr>
-                          
+										<?php endwhile; ?>
                                       <!-- More people... -->
                                     </tbody>
                                   </table>
+								  <?php
+		} else {
+			echo 'NO RESULTS FOUND';
+		}
+		} else {
+			#Do nothing if no search has been submitted
+		}
+		?>
                                 </div>
                               </div>
                             </div>

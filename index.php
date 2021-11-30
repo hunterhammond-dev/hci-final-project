@@ -1,3 +1,5 @@
+<?php include("config.php");
+session_start();?>
 <!doctype html>
 <html lang="en">
 
@@ -73,7 +75,7 @@
                 id="nav-content">
                 <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
                     <li class="mr-6 my-2 md:my-0">
-                        <a href="index.html"
+                        <a href="index.php"
                             class="block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-gray-900 border-b-2 border-orange-600 hover:border-green-600">
                             <i class="fas fa-home fa-fw mr-3 text-green-600"></i><span
                                 class="pb-1 md:pb-0 text-sm">Browse</span>
@@ -86,7 +88,7 @@
                         </a>
                     </li>
                     <li class="mr-6 my-2 md:my-0">
-                        <a href="#"
+                        <a href="figureRequest.php"
                             class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-green-500">
                             <i class="fas fa-chart-area fa-fw mr-3"></i><span
                                 class="pb-1 md:pb-0 text-sm">Figure Request</span>
@@ -110,11 +112,198 @@
             <div class="flex">
                 <div class="w-full mx-4 bg-white rounded shadow mt-4">
                     <div class="relative py-2 px-4 ">
-                        <input type="search" placeholder="Search"
-                            class="w-1/2 bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-gray-700 rounded py-1 px-2 pl-10 appearance-none leading-normal">
+                        <div class="search w-1/2 mx-auto">
+			<form action="index.php" method="GET">
+				<input class="w-3/4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none" type="text" placeholder="Search.."id="search" name="search">
+				<input type="submit" value="Search" class="bg-gray-100 cursor-pointer text-center text-sm text-gray-800 border-2 border-orange-600 hover:border-green-600 rounded py-2 px-6 appearance-none leading-normal">
+			</form>
+		</div>
                     </div>
                 </div>
             </div>
+			
+			<div class="hidden md:block result w-full">
+		<?php
+        try {
+			if(isset($_GET['search'])) {
+				$query = $_GET['search'];
+			} else {
+				$query = '';
+			}
+			
+			#DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE
+            // execute the stored procedure
+            $sql = $pdo->prepare('CALL af_db.proc_find_figure(?)');
+            // call the stored procedure
+            $sql->bindParam(1, $query, PDO::PARAM_STR, 150);
+			#$sql->bindParam(2, $upc, PDO::PARAM_INT);
+			#$sql->bindParam(3, $dcpi, PDO::PARAM_INT);
+
+			// call the stored procedure
+			$sql->execute();
+			
+			
+        } catch (PDOException $e) {
+            die("Error occurred:" . $e->getMessage());
+        }
+        ?>
+		
+		<?php
+		if($query != '') {
+		if($sql->rowCount() > 0) { ?>
+        <table class="w-full">
+            <tr>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Toy ID</th>
+                <th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Character Name</th>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Manufacturer</th>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Product Line</th>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Series</th>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">UPC</th>
+				<th scope="col"
+                                          class="
+                                            px-6
+                                            py-3
+                                            text-left text-xs
+                                            font-medium
+                                            text-gray-500
+                                            uppercase
+                                            tracking-wider
+                                          ">Release Date</th>
+            </tr>
+			<tbody class="bg-white shadow">
+            <?php while ($r = $sql->fetch()): ?>
+                <tr class="">
+					<div class="">
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['toy_id'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['character_name'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['company_name'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['line_name'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['series_name'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['upc'] ?></td>
+						<td class="text-sm text-gray-900 p-2"><?php echo $r['release_date'] ?></td>
+					</div>
+                </tr>
+            <?php endwhile; ?>
+			</tbody>
+        </table>
+		
+		<?php
+		} else {
+			echo 'NO RESULTS FOUND';
+		}
+		} else {
+			#Do nothing if no search has been submitted
+		}
+		?>
+		</div>
+		
+		<div class="block md:hidden">
+		<?php
+        try {
+			if(isset($_GET['search'])) {
+				$query = $_GET['search'];
+			} else {
+				$query = '';
+			}
+			
+			#DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE
+            // execute the stored procedure
+            $sql = $pdo->prepare('CALL af_db.proc_find_figure(?)');
+            // call the stored procedure
+            $sql->bindParam(1, $query, PDO::PARAM_STR, 150);
+			#$sql->bindParam(2, $upc, PDO::PARAM_INT);
+			#$sql->bindParam(3, $dcpi, PDO::PARAM_INT);
+
+			// call the stored procedure
+			$sql->execute();
+			
+			
+        } catch (PDOException $e) {
+            die("Error occurred:" . $e->getMessage());
+        }
+        ?>
+		
+		<?php
+		if($query != '') {
+		if($sql->rowCount() > 0) { ?>
+		<?php while ($r = $sql->fetch()): ?>
+			<div class="w-full flex flex-wrap">
+			<div class="w-1/2 shadow rounded bg-white text-center">
+				<p><?php echo $r['toy_id'] ?></p>
+				<p><?php echo $r['character_name'] ?></p>
+				<p><?php echo $r['company_name'] ?></p>
+				<p><?php echo $r['line_name'] ?></p>
+				<p><?php echo $r['series_name'] ?></p>
+				<p><?php echo $r['upc'] ?></p>
+				<p><?php echo $r['release_date'] ?></p>
+			</div>
+			</div>
+		<?php endwhile; ?>
+		<?php
+		} else {
+			echo 'NO RESULTS FOUND';
+		}
+		} else {
+			#Do nothing if no search has been submitted
+		}
+		?>
+		</div>
+			
+			
             <!--Divider-->
             <hr class="border-b-2 border-gray-400 my-8 mx-4">
             <div class="flex">
