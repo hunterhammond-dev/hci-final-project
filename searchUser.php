@@ -21,6 +21,8 @@ session_start();?>
         try {
 			if(isset($_GET['search'])) {
 				$query = $_GET['search'];
+			} else if ($_SESSION['logged_in_user_name'] != '') {
+				$query = $_SESSION['logged_in_user_name'];
 			} else {
 				$query = '';
 			}
