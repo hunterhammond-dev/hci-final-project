@@ -11,7 +11,7 @@ session_start();?>
     	
 	<div class="main">
 		<div class="login">
-			<form action="login.php" method="GET">
+			<form action="login.php" method="POST">
 				<label for="username"><b>Username</b></label><br>
 				<input type="text" placeholder="Username"id="username" name="username"><br><br>
 				<label for="password"><b>Password</b></label><br>
@@ -19,39 +19,48 @@ session_start();?>
 				<input type="submit" value="Login">
 			</form>
 		</div>
+		<div class="goto">
+			<form action="searchUser.php" method="GET">
+				<input type="submit" value="Find User">
+			</form>
+		</div>
 		<div class="result">
 		<?php
         try {
-			if(!empty($_GET)){
+			if(!empty($_POST)){
 			
 				#DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE
 				// execute the stored procedure
 				$sql_login = $pdo->prepare('SELECT af_db.fnc_log_in(?,?)');
 				// call the stored procedure
-				$sql_login->bindParam(1, $_GET['username'], PDO::PARAM_STR, 50);
-				$sql_login->bindParam(2, $_GET['password'], PDO::PARAM_STR, 20);
+				$sql_login->bindParam(1, $_POST['username'], PDO::PARAM_STR, 50);
+				$sql_login->bindParam(2, $_POST['password'], PDO::PARAM_STR, 20);
 
 				// call the stored procedure
 				$sql_login->execute();
 				#$sql_login->store_result();
 				#$sql_login->bind_result($result);
 				
-				echo $sql_login->num_rows;
+				#$results = $sql_login->rowCount();
 				
-				while($sql_login->fetch()){
-					echo $result;
-				}
-				
-				if($result = 1) {
-					echo 'Login Successful';
-				} else {
-					echo 'Login FAILED';
-				}
+				while ($r = $sql_login->fetch()):
+
+					if($r[0] == 1) {
+						echo 'Login Successful';
+						$_SESSION['logged_in_user_name'] = $_POST['username'];
+						
+					} else {
+						echo 'Login FAILED';
+						$_SESSION['logged_in_user_name'] = '';
+					}
+				endwhile;
 			}
 			
         } catch (PDOException $e) {
             die("Error occurred:" . $e->getMessage());
         }
+		#echo 'Session username stored';
+		#echo $_SESSION['logged_in_user_name'];
         ?>
 		
 		<?php
