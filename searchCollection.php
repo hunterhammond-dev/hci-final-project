@@ -76,16 +76,26 @@ session_start();?>
 			<table id="Table1" border=”1 | 0”>
 				<thead>
 					<tr>
-						<th>&nbsp;</th>
-						<th>Toy ID</th>
-						<th>Character Name</th>
-						<th>Manufacturer</th>
-						<th>Product Line</th>
-						<th>Series</th>
-						<th>UPC</th>
-						<th>Purchase Price</th>
-						<th>Purchase Date</th>
-						<th>Item Status</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">&nbsp;</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Toy ID</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Character Name</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manufacturer</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Line</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Series</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UPC</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purchase Price</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purchase Date</th>
+						<th scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Status</th>
 					</tr>
 				</thead>
 				
@@ -95,15 +105,15 @@ session_start();?>
 								<td>
 									<input type="checkbox" name="toy" id="toy">
 								</td>
-								<td style="text-align:center"><?php echo $r['toy_id'] ?></td>
-								<td><?php echo $r['character_name'] ?></td>
-								<td><?php echo $r['company_name'] ?></td>
-								<td><?php echo $r['line_name'] ?></td>
-								<td><?php echo $r['series_name'] ?></td>
-								<td><?php echo $r['upc'] ?></td>
-								<td><?php echo $r['purchase_price'] ?></td>
-								<td><?php echo $r['purchase_date'] ?></td>
-								<td><?php echo $r['item_status'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['toy_id'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['character_name'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['company_name'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['line_name'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['series_name'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['upc'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['purchase_price'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['purchase_date'] ?></td>
+								<td class="text-sm text-gray-900 p-2"><?php echo $r['item_status'] ?></td>
 							</tr>
 						<?php endwhile; ?>
 						
