@@ -7,6 +7,31 @@ session_start();?>
 <title>Find Figure</title>
 <link rel = "stylesheet" type = "text/css" href = "/layouts/style.css">
 </head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Assign Click event to Button.
+        $("#btnGet").click(function () {
+            var message;
+ 
+            //Loop through all checked CheckBoxes in GridView.
+            $("#Table1 input[type=checkbox]:checked").each(function () {
+                var row = $(this).closest("tr")[0];
+                message += row.cells[1].innerHTML;
+                //message += "   " + row.cells[2].innerHTML;
+                //message += "   " + row.cells[3].innerHTML;
+                message += "\n";
+            });
+ 
+            //Display selected Row data in Alert Box.
+            alert(message);
+            return message;
+        });
+    });
+</script>
+
+
+
 <body>
     	
 	<div class="main">
@@ -45,30 +70,50 @@ session_start();?>
 		<?php
 		if($query != '') {
 		if($sql->rowCount() > 0) { ?>
-        <table border=”1 | 0”>
-            <tr>
-				<th>Toy ID</th>
-                <th>Character Name</th>
-				<th>Manufacturer</th>
-				<th>Product Line</th>
-				<th>Series</th>
-				<th>UPC</th>
-				<th>DPCI</th>
-				<th>Release Date</th>
-            </tr>
-            <?php while ($r = $sql->fetch()): ?>
-                <tr>
-                    <td style="text-align:center"><?php echo $r['toy_id'] ?></td>
-					<td><?php echo $r['character_name'] ?></td>
-					<td><?php echo $r['company_name'] ?></td>
-					<td><?php echo $r['line_name'] ?></td>
-					<td><?php echo $r['series_name'] ?></td>
-					<td><?php echo $r['upc'] ?></td>
-					<td><?php echo $r['dpci'] ?></td>
-					<td><?php echo $r['release_date'] ?></td>
-                </tr>
-            <?php endwhile; ?>
-        </table>
+        <form action="search.php" method="GET">
+			<table id="Table1" border=”1 | 0”>
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Toy ID</th>
+						<th>Character Name</th>
+						<th>Manufacturer</th>
+						<th>Product Line</th>
+						<th>Series</th>
+						<th>UPC</th>
+						<th>DPCI</th>
+						<th>Release Date</th>
+					</tr>
+				</thead>
+				
+						<?php 
+							$i = 0;
+							while ($r = $sql->fetch()): ?>
+							<tr>
+								<td>
+									<?php echo '<input type="checkbox" name="toy[]" value="'.$i.'" id="toy">'?>
+								</td>
+								<td style="text-align:center"><?php echo $r['toy_id'] ?></td>
+								<td name="char" ><?php echo $r['character_name'] ?></td>
+								<td><?php echo $r['company_name'] ?></td>
+								<td><?php echo $r['line_name'] ?></td>
+								<td><?php echo $r['series_name'] ?></td>
+								<td><?php echo $r['upc'] ?></td>
+								<td><?php echo $r['dpci'] ?></td>
+								<td><?php echo $r['release_date'] ?></td>
+							</tr>
+						<?php 
+							$i++;
+						endwhile; ?>
+						
+				
+			</table>
+			<br>
+			<input type="submit" value="Add Selected to Collection">
+			<?php echo '<input type="text" value="'.$_GET['toy']['char'].'"/>' ?>
+		</form>
+		
+		
 		<?php
 		} else {
 			echo 'NO RESULTS FOUND';
